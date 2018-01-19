@@ -37,7 +37,19 @@ namespace ValueProvider
         /// <inheritdoc />
         public bool ContainsPrefix(string prefix)
         {
-            return !PrefixContainer.ContainsPrefix(prefix);
+            foreach (string key in _query.Keys)
+            {
+                if (ModelStateDictionary.StartsWithPrefix(prefix, key) 
+                    || ModelStateDictionary.StartsWithPrefix(prefix.RemoveWhitespace(), key)
+                    || ModelStateDictionary.StartsWithPrefix(prefix, key.RemoveWhitespace())
+                    || ModelStateDictionary.StartsWithPrefix(prefix.RemoveWhitespace(), key.RemoveWhitespace())
+                    || ModelStateDictionary.StartsWithPrefix(prefix, key.Replace("-", String.Empty))
+                    || ModelStateDictionary.StartsWithPrefix(prefix, key.Replace("-", "_")))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         //public bool ContainsPrefix(string prefix)

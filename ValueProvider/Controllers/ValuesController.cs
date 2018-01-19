@@ -18,7 +18,7 @@ namespace ValueProvider.Controllers
 
         // GET api/values/5
         [HttpGet("get"), HttpPost("post")]
-        public object Get(BIND model)
+        public object Get(string model)
         {
             return Json(model);
         }
