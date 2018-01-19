@@ -27,8 +27,8 @@ namespace ValueProvider
             {
                 //options.ModelBinderProviders.Insert(0, new AlternativeKeyModelBinderProvider());
                 options.ValueProviderFactories.Insert(0, new CasedValueProviderFactory_Query());
-                options.ValueProviderFactories.Insert(1, new CasedValueProviderFactory_jQueryForm());
-                options.ValueProviderFactories.Insert(2, new CasedValueProviderFactory_Form());
+                //options.ValueProviderFactories.Insert(1, new CasedValueProviderFactory_jQueryForm());
+                //options.ValueProviderFactories.Insert(2, new CasedValueProviderFactory_Form());
 
             });
         }

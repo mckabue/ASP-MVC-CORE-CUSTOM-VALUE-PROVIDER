@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -13,17 +14,37 @@ namespace ValueProvider
     public class CasedValueProvider : IValueProvider
     {
         private IDictionary<string, StringValues> _query;
+        private PrefixContainer _prefixContainer;
 
         public CasedValueProvider(IDictionary<string, StringValues> query)
         {
             _query = query;
         }
 
+        protected PrefixContainer PrefixContainer
+        {
+            get
+            {
+                if (_prefixContainer == null)
+                {
+                    _prefixContainer = new PrefixContainer(_query.Keys);
+                }
+
+                return _prefixContainer;
+            }
+        }
+
+        /// <inheritdoc />
         public bool ContainsPrefix(string prefix)
         {
-            //return ModelStateDictionary.StartsWithPrefix(prefix, Key);
-            return false;
+            return !PrefixContainer.ContainsPrefix(prefix);
         }
+
+        //public bool ContainsPrefix(string prefix)
+        //{
+        //    //return ModelStateDictionary.StartsWithPrefix(prefix, Key);
+        //    return false;
+        //}
 
         public ValueProviderResult GetValue(string key)
         {
@@ -97,8 +118,8 @@ namespace ValueProvider
         {
             var request = context.ActionContext.HttpContext.Request;
             var valueProvider = new CasedValueProvider(request.Query.ToDictionary(i => i.Key, i => i.Value));
-            //context.ValueProviders.Insert(0, new CasedValueProvider(request.Query.ToDictionary(i => i.Key, i => i.Value)));
-            context.ValueProviders.Add(valueProvider);
+            context.ValueProviders.Insert(0, valueProvider);
+            //context.ValueProviders.Add(valueProvider);
         }
     }
 
